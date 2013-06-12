@@ -1,0 +1,261 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>SFA ToDo</title>
+    <link href='http://fonts.googleapis.com/css?family=Lato:200,300,700' rel='stylesheet' type='text/css'>
+
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            padding: 20px 35px;
+        }
+
+        h1 {
+            font-family: 'Lato', sans-serif;
+            font-size: 3em;
+            font-weight: 200;
+        }
+
+        div.todo-items {
+            width: 400px;
+        }
+
+        div.list-item {
+            clear: both;
+            margin-bottom: 3px;
+        }
+
+            div.list-item div.item-status {
+                display: inline-block;
+                width: 50px;
+                height: 100%;
+                text-align: center;
+                background-color: #ddd;
+                font-family: 'Lato', sans-serif;
+                font-size: 3em;
+                font-weight: 200;
+                color: transparent;
+                cursor: pointer;
+            }
+
+            div.list-item div.item-status:hover {
+                color: #888;
+            }
+
+            div.list-item div.item-text {
+                float: right;
+                width: 340px;
+                font-family: Helvetica, Arial;
+                font-size: 1em;
+                font-weight: normal;
+            }
+
+       
+        div.done div.item-status {
+            background-color: palegreen;
+            color: #000;
+        }
+        div.done div.item-text {
+            color: #888;
+        }
+
+        div.item-tools {
+            margin-bottom: 10px;
+        }
+
+            div.item-tools textarea.item-text {
+                width: 100%;
+                font-family: Helvetica, Arial;
+                font-size: 1em;
+                font-weight: normal;
+                height: 4em;
+            }
+
+            div.item-tools input.item-add {
+                width: 100%;
+                font-family: Helvetica, Arial;
+                font-size: 0.8em;
+                font-weight: normal;
+                padding-top: 0.2em;
+                padding-bottom: 0.2em;
+            }
+    </style>
+
+    <script type="text/javascript">
+        var tQ = function () {
+            // find elements
+            var funcById = function (elementId) {
+                return document.getElementById(elementId);
+            };
+            var funcByClass = function (className, context) {
+                var ctx = context || document;
+                return ctx.getElementsByClassName(className);
+            };
+
+            // adding/removing elements
+            var funcAppend = function (parent, newNode) {
+                parent.appendChild(newNode);
+            };
+
+            var funcInsertBefore = function (sibling, newNode) {
+                sibling.parentNode.insertBefore(newNode, sibling);
+            };
+
+            var funcInsertAfter = function (sibling, newNode) {
+                sibling.parentNode.insertBefore(newNode, sibling.nextSibling);
+            };
+
+            var funcRemove = function (node) {
+                node.parentNode.removeChild(node);
+            };
+
+            // class-manipulation
+            var funcAddClass = function (node, className) {
+                if (!node.classList.contains(className)) {
+                    node.classList.add(className);
+                }
+            };
+            var funcRemoveClass = function (node, className) {
+                if (node.classList.contains(className)) {
+                    node.classList.remove(className);
+                }
+            };
+
+            // attributes
+            var funcGetAttr = function (node, attr, value) {
+                node.getAttribute(attr);
+            };
+            var funcAddAttr = function (node, attr, value) {
+                node.setAttribute(attr, value);
+            };
+            var funcRemoveAttr = function (node, attr) {
+                node.setAttribute(attr, null);
+            };
+
+            // expose properties and methods
+            return {
+                GetById: funcById,
+                GetByClass: funcByClass,
+                Append: funcAppend,
+                Delete: funcRemove,
+                InsertAfter: funcInsertAfter,
+                InsertBefore: funcInsertBefore,
+                AddClass: funcAddClass,
+                RemoveClass: funcRemoveClass,
+                AddAttr: funcAddAttr,
+                GetAttr: funcGetAttr,
+                DeleteAttr: funcRemoveAttr
+            };
+        }();
+
+        var store = function (pfx) {
+            var prefix = pfx || "sfa-todo-";
+
+            var funcSet = function (key, value) {
+                localStorage.setItem(prefix + key, JSON.stringify(value));
+            };
+            var funcGet = function (key) {
+                return JSON.parse(localStorage.getItem(prefix + key));
+            };
+            var funcDelete = function (key) {
+                localStorage.removeItem(prefix + key);
+            };
+            var funcKeys = function () {
+                var keys = [];
+                for (var i = 0; i < localStorage.length; i++) {
+                    var key = localStorage.key(i);
+                    if (key.indexOf(prefix) == 0) {
+                        keys.push(key.replace(prefix, ""));
+                    }
+                }
+                return keys;
+            };
+
+            return {
+                Set: funcSet,
+                Get: funcGet,
+                Delete: funcDelete,
+                Keys: funcKeys
+            };
+        }();
+    </script>
+</head>
+<body>
+    <script type="text/template" id="tmpl_list_item">
+        <div class="list-item">
+            <div class="list-item-text">{{text}}</div>
+            <div class="item-status">&#10003;</div>
+        </div>
+    </script>
+
+    <h1>ToDo</h1>
+
+    <div id="todoList" class="todo-items">
+        <div class="list-item item-tools">
+            <textarea class="item-text"></textarea>
+            <input type="button" value="Add" class="item-add" />
+        </div>
+        <div class="list-item done">
+            <div class="item-text">
+                slkasfkj
+                asdfsadfsadf
+                sadfasdfsdf
+                asdfassdf
+                sadfasfs
+            </div>
+            <div class="item-status">&#10003;</div>
+        </div>
+        <div class="list-item">
+            <div class="item-text">
+                slkasfkj
+                asdfsadfsadf
+                sadfasdfsdf
+                asdfassdf
+                sadfasfs
+            </div>
+            <div class="item-status">&#10003;</div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        /*
+        var tmpl = tQ.GetById('tmpl_list_item');
+        console.log(tmpl);
+
+        var todo = tQ.GetById('todoList');
+
+        // create template
+        var newItem = document.createElement("div");
+        newItem.innerHTML = tmpl.innerHTML;
+        var node = newItem.childNodes[1];
+
+        var textNode = tQ.GetByClass("list-item-text", node);
+
+        if (textNode.length > 0) {
+            console.log("setting text");
+            textNode[0].innerText = "some text";
+        }
+
+        tQ.AddAttr(node, "id", "itm_" + (localStorage.length + 1));
+
+        tQ.Append(todo, node);
+        console.log("---");
+
+        console.log(todo);
+        console.log("---");
+
+        store.Set("mykey", { "key": 12 });
+
+        var k = store.Get("mykey");
+
+        console.log(store.Keys());
+        console.log(k);
+        */
+    </script>
+</body>
+</html>
