@@ -15,6 +15,12 @@
             padding: 20px 35px;
         }
 
+        div.ctr {
+            margin-left: auto;
+            margin-right: auto;
+            width: 400px;
+        }
+
         h1 {
             font-family: 'Lato', sans-serif;
             font-size: 3em;
@@ -188,16 +194,17 @@
 <body>
     <script type="text/template" id="tmpl_list_item">
         <div class="list-item">
-            <div class="list-item-text">{{text}}</div>
+            <div class="item-text">{{text}}</div>
             <div class="item-status">&#10003;</div>
         </div>
     </script>
 
+    <div class="ctr">
     <h1>ToDo</h1>
 
     <div id="todoList" class="todo-items">
         <div class="list-item item-tools">
-            <textarea class="item-text"></textarea>
+            <textarea class="item-text" id="item_text"></textarea>
             <input type="button" value="Add" class="item-add" />
         </div>
         <div class="list-item done">
@@ -221,29 +228,39 @@
             <div class="item-status">&#10003;</div>
         </div>
     </div>
+    </div>
 
     <script type="text/javascript">
-        /*
-        var tmpl = tQ.GetById('tmpl_list_item');
-        console.log(tmpl);
-
+        var itemTemplate = tQ.GetById('tmpl_list_item').innerHTML;
         var todo = tQ.GetById('todoList');
 
-        // create template
-        var newItem = document.createElement("div");
-        newItem.innerHTML = tmpl.innerHTML;
-        var node = newItem.childNodes[1];
+        var addNewTodoItem = function(){
+            var txt = tQ.GetById('item_text');
+            var todoText = txt.value;
+            txt.value = '';
+            console.log(todoText);
 
-        var textNode = tQ.GetByClass("list-item-text", node);
+            var newTodoItem = itemTemplate.replace('{{text}}', todoText);
+            var newItem = document.createElement("div");
+            newItem.innerHTML = newTodoItem;
+            var node = newItem.childNodes[1];
 
-        if (textNode.length > 0) {
-            console.log("setting text");
-            textNode[0].innerText = "some text";
-        }
+            var textNode = tQ.GetByClass("list-item-text", node);
 
-        tQ.AddAttr(node, "id", "itm_" + (localStorage.length + 1));
+            var itmid = "itm_" + (localStorage.length + 1);
 
-        tQ.Append(todo, node);
+            tQ.AddAttr(node, "id", itmid);
+            tQ.Append(todo, node);
+
+            var itmobj = { "id": itmid, "todo": todoText, "done": false };
+            store.Set( itmid, itmobj );
+        };
+
+        var addButton = tQ.GetByClass('item-add');
+        tQ.AddAttr(addButton[0], 'onclick', 'javascript:addNewTodoItem();');
+
+        /*
+
         console.log("---");
 
         console.log(todo);
